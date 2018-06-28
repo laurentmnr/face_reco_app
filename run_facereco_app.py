@@ -9,7 +9,7 @@ print()
 
 while True:
     addperson= input("Add a person? If yes, Press ENTER, otherwise press N \n")
-    if len(addperson)>1 and addperson[-1]=='N':
+    if len(addperson)>=1 and addperson[-1]=='N':
         break
     print()
     name = input("Enter your name: \n")
