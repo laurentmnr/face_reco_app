@@ -94,8 +94,11 @@ class Identifier:
     def identify(self, face):
         if face.embedding is not None:
             predictions = self.model.predict_proba([face.embedding])
-            best_class_indices = np.argmax(predictions, axis=1)
-            return self.class_names[best_class_indices[0]]
+            best_class_indices = np.argmax(predictions, axis=1)[0]
+
+            if predictions[0,best_class_indices]<0.8:
+                return 'Not in dataset'
+            return self.class_names[best_class_indices]
 
 
 class Encoder:
