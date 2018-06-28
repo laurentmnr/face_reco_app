@@ -16,6 +16,15 @@ from scipy import interpolate
 import cv2
 
 def main(args):
+    curr_dir=os.getcwd()
+    path=os.path.join(curr_dir,args.output_dir,args.person)
+    if not os.path.exists(path):
+        print(path)
+        os.mkdir(path)
+    else:
+        print("Error: Name already in database")
+        return
+
     cam = cv2.VideoCapture(0)
     cam.set(3,args.image_size);
     cam.set(4,args.image_size);
