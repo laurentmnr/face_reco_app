@@ -43,7 +43,7 @@ import facenet
 
 gpu_memory_fraction = 0.3
 facenet_model_checkpoint = '/Users/laurent/Desktop/facenet-master/pretrained_models/20180408-102900'
-classifier_model= '/Users/laurent/Desktop/facenet-master/classifier_models/model_perso.pkl'
+classifier_model= '/Users/laurent/Desktop/facenet-master/classifier_models/model_perso2.pkl'
 
 debug = False
 
