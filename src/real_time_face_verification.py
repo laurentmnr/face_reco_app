@@ -69,7 +69,7 @@ def main(args):
     frame_count = 0
 
     video_capture = cv2.VideoCapture(0)
-    face_verification = face.Verification()
+    face_verification = face.Verification(args.person)
     start_time = time.time()
 
     if args.debug:
@@ -114,6 +114,7 @@ def parse_arguments(argv):
 
     parser.add_argument('--debug', action='store_true',
                         help='Enable some debug outputs.')
+    parser.add_argument('--person', help='Name of the person')
     return parser.parse_args(argv)
 
 

@@ -43,9 +43,7 @@ import facenet
 image_size=160
 gpu_memory_fraction = 0.3
 facenet_model_checkpoint = '/Users/laurent/Desktop/facenet-master/pretrained_models/20180408-102900'
-face_model= '/Users/laurent/Desktop/facenet-master/datasets/Perso_aligned/Laurent/Laurent0.png'
-face_model= misc.imread(face_model, mode='RGB')
-face_model=misc.imresize(face_model, (image_size, image_size), interp='bilinear')
+
 debug = False
 
 
@@ -65,10 +63,15 @@ class Face:
 
 
 class Verification:
-    def __init__(self):
+    def __init__(self,person):
         self.detect = Detection()
         self.encoder = Encoder()
         # self.verifier = Verifier()
+
+        self.person=person
+        face_model= '/Users/laurent/Desktop/facenet-master/datasets/Perso_aligned/'+person+'/'+person+'0.png'
+        face_model= misc.imread(face_model, mode='RGB')
+        face_model=misc.imresize(face_model, (image_size, image_size), interp='bilinear')
 
         face_model_obj=Face()
         face_model_obj.image=face_model
