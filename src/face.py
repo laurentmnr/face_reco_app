@@ -42,8 +42,8 @@ import facenet
 
 
 gpu_memory_fraction = 0.3
-facenet_model_checkpoint = '/Users/laurent/Desktop/facenet-master/pretrained_models/20180408-102900'
-classifier_model= '/Users/laurent/Desktop/facenet-master/classifier_models/model_perso2.pkl'
+facenet_model_checkpoint = '/home/laurent/Bureau/face_reco_app/pretrained_models/20180408-102900'
+classifier_model= '/home/laurent/Bureau/face_reco_app/classifier_models/model_perso2.pkl'
 
 debug = False
 
@@ -96,8 +96,8 @@ class Identifier:
             predictions = self.model.predict_proba([face.embedding])
             best_class_indices = np.argmax(predictions, axis=1)[0]
 
-            if predictions[0,best_class_indices]<0.8:
-                return 'Not in dataset'
+            #if predictions[0,best_class_indices]<0.8:
+            #    return 'Not in dataset'
             return self.class_names[best_class_indices]
 
 

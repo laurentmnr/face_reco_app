@@ -40,9 +40,10 @@ from scipy import misc
 import align.detect_face
 import facenet
 
-image_size=160
+
 gpu_memory_fraction = 0.3
 facenet_model_checkpoint = '/home/laurent/Bureau/face_reco_app/pretrained_models/20180408-102900'
+classifier_model= '/home/laurent/Bureau/face_reco_app/classifier_models/edf_classifier.pkl'
 
 debug = False
 
@@ -57,52 +58,47 @@ class Face:
         self.score=None
 
 
-
-
-
-
-
-class Verification:
-    def __init__(self,person):
+class Recognition:
+    def __init__(self):
         self.detect = Detection()
         self.encoder = Encoder()
-        # self.verifier = Verifier()
+        self.identifier = Identifier()
 
-        self.person=person
-        face_model= '/home/laurent/Bureau/face_reco_app/datasets/Perso_aligned/'+person+'/'+person+'0.png'
-        face_model= misc.imread(face_model, mode='RGB')
-        face_model=misc.imresize(face_model, (image_size, image_size), interp='bilinear')
+    def add_identity(self, image, person_name):
+        faces = self.detect.find_faces(image)
 
-        face_model_obj=Face()
-        face_model_obj.image=face_model
-        self.model_emb=self.encoder.generate_embedding(face_model_obj)
+        if len(faces) == 1:
+            face = faces[0]
+            face.name = person_name
+            face.embedding = self.encoder.generate_embedding(face)
+            return faces
 
-    def verify(self, image):
+    def identify(self, image):
         faces = self.detect.find_faces(image)
 
         for i, face in enumerate(faces):
             if debug:
                 cv2.imshow("Face: " + str(i), face.image)
             face.embedding = self.encoder.generate_embedding(face)
-            face.score = np.linalg.norm(face.embedding-self.model_emb)
+            face.name = self.identifier.identify(face)
 
         return faces
 
 
-# class Verifier:
-#     def __init__(self):
-#         self.encoder = Encoder()
-#         face_model_obj=Face()
-#         face_model_obj.image=face_model
-#         self.model_emb=self.encoder.generate_embedding(face_model_obj)
-#     def score_verification(self, face,):
-#         if face.embedding is not None:
-#             score=np.linalg.norm(face.embedding-self.model_emb)
-#             return score
 
+class Identifier:
+    def __init__(self):
+        with open(classifier_model, 'rb') as infile:
+            self.model, self.class_names = pickle.load(infile)
 
+    def identify(self, face):
+        if face.embedding is not None:
+            predictions = self.model.predict_proba([face.embedding])
+            best_class_indices = np.argmax(predictions, axis=1)[0]
 
-
+            #if predictions[0,best_class_indices]<0.8:
+            #    return 'Not in dataset'
+            return self.class_names[best_class_indices]
 
 
 class Encoder:

@@ -30,10 +30,10 @@ import time
 
 import cv2
 
-import face
+import face_edf
 
 
-def add_overlays(frame, faces, frame_rate):
+def add_overlays(frame, faces):
     if faces is not None:
         for face in faces:
             face_bb = face.bounding_box.astype(int)
@@ -41,61 +41,31 @@ def add_overlays(frame, faces, frame_rate):
                           (face_bb[0], face_bb[1]), (face_bb[2], face_bb[3]),
                           (0, 255, 0), 2)
             if face.name is not None:
-                cv2.putText(frame, face.name, (face_bb[0], face_bb[3]),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0),
-                            thickness=2, lineType=2)
+                cv2.putText(frame, face.name, (face_bb[0]+3, face_bb[3]-5),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0),
+                            thickness=1, lineType=2)
 
-    cv2.putText(frame, str(frame_rate) + " fps", (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0),
-                thickness=2, lineType=2)
 
 
 def main(args):
-    frame_interval = 3  # Number of frames after which to run face detection
-    fps_display_interval = 5  # seconds
-    frame_rate = 0
-    frame_count = 0
 
-    video_capture = cv2.VideoCapture(0)
-    face_recognition = face.Recognition()
-    start_time = time.time()
-
+    #video_capture = cv2.VideoCapture(0)
+    face_recognition = face_edf.Recognition()
     if args.debug:
         print("Debug enabled")
         face.debug = True
-    
-    while True:
-        # Capture frame-by-frame
-        ret, frame = video_capture.read()
 
-        if (frame_count % frame_interval) == 0:
-            faces = face_recognition.identify(frame)
 
-            # Check our current fps
-            end_time = time.time()
-            if (end_time - start_time) > fps_display_interval:
-                frame_rate = int(frame_count / (end_time - start_time))
-                start_time = time.time()
-                frame_count = 0
+    frame =cv2.imread( "/home/laurent/Bureau/face_reco_app/datasets/photocouv")
 
-        add_overlays(frame, faces, frame_rate)
 
-        k = cv2.waitKey(1)
-        if k%256 == 27:
-            # ESC pressed
-            print("Escape hit, closing...")
-            break
+    faces = face_recognition.identify(frame)
 
-        frame_count += 1
-        cv2.namedWindow("Video", cv2.WND_PROP_FULLSCREEN)
-        cv2.setWindowProperty("Video",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
-        cv2.imshow('Video', frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    add_overlays(frame, faces)
 
     # When everything is done, release the capture
-    video_capture.release()
+    cv2.imshow( "image",frame);
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 

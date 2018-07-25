@@ -30,7 +30,7 @@ import time
 
 import cv2
 
-import face
+import face_edf
 
 
 def add_overlays(frame, faces, frame_rate):
@@ -57,13 +57,13 @@ def main(args):
     frame_count = 0
 
     video_capture = cv2.VideoCapture(0)
-    face_recognition = face.Recognition()
+    face_recognition = face_edf.Recognition()
     start_time = time.time()
 
     if args.debug:
         print("Debug enabled")
         face.debug = True
-    
+
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read()
