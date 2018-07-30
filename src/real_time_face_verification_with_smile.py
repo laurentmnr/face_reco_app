@@ -70,6 +70,10 @@ def main(args):
     frame_count = 0
     frame_interval = 3
     count_id = 0
+    count_smile = 0
+    count_no_smile = 0
+    count_tot_smile = 0
+    count_tot_no_smile = 0
     smilePath = "src/haarcascade_smile.xml"
     smileCascade = cv2.CascadeClassifier(smilePath)
 
@@ -91,12 +95,18 @@ def main(args):
 
 
         run_time = time.time()-start_time
-        # if run_time>5 and run_time<10:
-        #     cv2.putText(frame, "Don't smile", (10, 30),
-        #                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0),
-        #                 thickness=2, lineType=2)
+        if run_time>3 and run_time<6:
+            cv2.putText(frame, "Don't smile", (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0),
+                        thickness=2, lineType=2)
 
+        if run_time>6 and run_time<9:
+            cv2.putText(frame, "Smile", (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0),
+                        thickness=2, lineType=2)
 
+        if run_time>9:
+            break
 
 
 
@@ -117,8 +127,16 @@ def main(args):
                     minSize=(25, 25),
                     flags=cv2.CASCADE_SCALE_IMAGE
                 )
+                if run_time>3 and run_time<6:
+                    count_tot_no_smile+=1
+                    if len(smile)==0:
+                        count_no_smile+=1
 
-                # if len(smile)>=1:
+                if run_time>6 and run_time<9:
+                    count_tot_smile+=1
+                    if len(smile)>=1:
+                        count_smile+=1
+
 
 
                 for (x2, y2, w2, h2) in smile:
@@ -146,10 +164,16 @@ def main(args):
 
 
     print(count_id/frame_count)
-    if count_id/frame_count>=0.9:
+    if count_id/frame_count>=0.7:
         print("Idenity IS TRUE")
     else:
         print("Identity is FALSE")
+
+    print(count_id/frame_count)
+    if count_no_smile/count_tot_no_smile>=0.6 and count_smile/count_tot_smile>=0.6 and count_id/frame_count>=0.9:
+        print("Idenity has been fully verified with smile detection")
+
+
 
 
 
