@@ -12,7 +12,7 @@ chardet==3.0.4
 conda==4.3.16
 configparser==3.5.0
 context2vec==1.0
-cvxopt==1.1.9
+cvxopt==1.2.7
 cycler==0.10.0
 Cython==0.27.3
 decorator==4.2.1
